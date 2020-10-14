@@ -1,6 +1,6 @@
 # FFF aka stuFF Finder
 
-A simple script that automatically search stuff on the desired websites and open tabs on the browser.
+A simple script that automatically search stuff on the desired websites.
 
 I use it mainly to search for books and as I'm currently based in Germany the script redirect to german sites.
 The sites are there as examples and you can modify the script to point to other websites, specify categories, filters and so on.
