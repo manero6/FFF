@@ -7,7 +7,7 @@ The sites are there as examples and you can modify the script to point to other 
 
 This script searches:
 - Ebay.de - filtering items from lowest price
-- Ebay.de - only autions filtering items from ending soonest
+- Ebay.de - only auctions filtering items from ending soonest
 - ebay-kleinazeigen.de - default filter
 - medimops.de - filtering items from lowest price
 - rebuy.de - filtering items from lowest price
