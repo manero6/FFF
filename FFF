@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# The websites I want to get stuff from
+# websites 
 EBAY_DE="https://www.ebay.de/sch/i.html?_nkw="
 EBAY_KL="https://www.ebay-kleinanzeigen.de/s-"
 EBAY_LOWEST_PRICE="&_sop=15"
@@ -14,15 +14,15 @@ IFS=';'; WORDS=($(zenity --entry))
 
 for WORD in "${WORDS[@]}"
 do
-	EBAY_WORD=$(echo $WORD | sed 's/ /+/g')
-	EBAY_KL_WORD=$(echo $WORD | sed 's/ /-/g')
-	MEDIMOPS_WORD=$EBAY_WORD
-	REBUY_WORD=$(echo $WORD | sed 's/ /%20/g')
+  # substitute space with the needed symbols
+  WORD_PLUS=$(echo $WORD | sed 's/ /+/g')
+  WORD_MINUS=$(echo $WORD | sed 's/ /-/g')
+  WORD_PERC=$(echo $WORD | sed 's/ /%20/g')
 
-	[ -z $WORD ] && exit ||
-	xdg-open $EBAY_DE$EBAY_WORD$EBAY_LOWEST_PRICE
-	xdg-open $EBAY_DE$EBAY_WORD$EBAY_END_SOONEST$EBAY_AUCTION
-	xdg-open $EBAY_KL$EBAY_KL_WORD/k0
-	xdg-open $MEDIMOPS$MEDIMOPS_WORD
-	xdg-open $REBUY$REBUY_WORD$REBUY_LOWEST_PRICE
+  [ -z $WORD ] && exit ||
+  xdg-open $EBAY_DE$EBAY_WORD$EBAY_LOWEST_PRICE
+  xdg-open $EBAY_DE$EBAY_WORD$EBAY_END_SOONEST$EBAY_AUCTION
+  xdg-open $EBAY_KL$EBAY_KL_WORD/k0
+  xdg-open $MEDIMOPS$MEDIMOPS_WORD
+  xdg-open $REBUY$REBUY_WORD$REBUY_LOWEST_PRICE
 done
