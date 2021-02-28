@@ -15,14 +15,17 @@ IFS=';'; WORDS=($(zenity --entry))
 for WORD in "${WORDS[@]}"
 do
   # substitute space with the needed symbols
+  # EBAY - MEDIMOPS - 
   WORD_PLUS=$(echo $WORD | sed 's/ /+/g')
+  # EBAY_KL - 
   WORD_MINUS=$(echo $WORD | sed 's/ /-/g')
+  # REBUY - 
   WORD_PERC=$(echo $WORD | sed 's/ /%20/g')
 
   [ -z $WORD ] && exit ||
-  xdg-open $EBAY_DE$EBAY_WORD$EBAY_LOWEST_PRICE
-  xdg-open $EBAY_DE$EBAY_WORD$EBAY_END_SOONEST$EBAY_AUCTION
-  xdg-open $EBAY_KL$EBAY_KL_WORD/k0
-  xdg-open $MEDIMOPS$MEDIMOPS_WORD
-  xdg-open $REBUY$REBUY_WORD$REBUY_LOWEST_PRICE
+  xdg-open $EBAY_DE$WORD_PLUS$EBAY_LOWEST_PRICE
+  xdg-open $EBAY_DE$WORD_PLUS$EBAY_END_SOONEST$EBAY_AUCTION
+  xdg-open $EBAY_KL$WORD_MINUS/k0
+  xdg-open $MEDIMOPS$WORD_PLUS
+  xdg-open $REBUY$WORD_PERC$REBUY_LOWEST_PRICE
 done
