@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # websites 
+AMAZON_DE="https://www.amazon.de/s?k="
 EBAY_DE="https://www.ebay.de/sch/i.html?_nkw="
 EBAY_KL="https://www.ebay-kleinanzeigen.de/s-"
 EBAY_LOWEST_PRICE="&_sop=15"
@@ -23,6 +24,7 @@ do
   WORD_PERC=$(echo $WORD | sed 's/ /%20/g')
 
   [ -z $WORD ] && exit ||
+  xdg-open $AMAZON_DE$WORD_PLUS
   xdg-open $EBAY_DE$WORD_PLUS$EBAY_LOWEST_PRICE
   xdg-open $EBAY_DE$WORD_PLUS$EBAY_END_SOONEST$EBAY_AUCTION
   xdg-open $EBAY_KL$WORD_MINUS/k0
