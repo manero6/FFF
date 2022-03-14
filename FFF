@@ -10,6 +10,7 @@ EBAY_AUCTION="&LH_Auction=1"
 MEDIMOPS="https://www.medimops.de/produkte-C0/?listorder=asc&listorderby=oxvarminprice&searchparam="
 REBUY="https://www.rebuy.de/kaufen/suchen?q="
 REBUY_LOWEST_PRICE="&sortBy=price_asc"
+WOB="https://www.wob.com/de-de/kategorie/alle?search="
 
 IFS=';'; WORDS=($(zenity --entry))
 
@@ -20,7 +21,7 @@ do
   WORD_PLUS=$(echo $WORD | sed 's/ /+/g')
   # EBAY_KL - 
   WORD_MINUS=$(echo $WORD | sed 's/ /-/g')
-  # REBUY - 
+  # REBUY - WOB
   WORD_PERC=$(echo $WORD | sed 's/ /%20/g')
 
   [ -z $WORD ] && exit ||
@@ -30,4 +31,5 @@ do
   xdg-open $EBAY_KL$WORD_MINUS/k0
   xdg-open $MEDIMOPS$WORD_PLUS
   xdg-open $REBUY$WORD_PERC$REBUY_LOWEST_PRICE
+  xdg-open $WOB$WORD_PERC
 done
