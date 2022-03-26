@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# substitute spaces
-# plus sign + 
-WORD_PLUS=$(echo $WORD | sed 's/ /+/g')
-# minus sign -
-WORD_MINUS=$(echo $WORD | sed 's/ /-/g')
-# percent encoding %20
-WORD_PERC=$(echo $WORD | sed 's/ /%20/g')
-
 # websites 
 AMAZON_DE="https://www.amazon.de/s?k="
 EBAY_DE="https://www.ebay.de/sch/i.html?_nkw="
@@ -24,6 +16,15 @@ IFS=';'; WORDS=($(zenity --entry))
 
 for WORD in "${WORDS[@]}"
 do
+  
+  # substitute spaces
+  # plus sign + 
+  WORD_PLUS=$(echo $WORD | sed 's/ /+/g')
+  # minus sign -
+  WORD_MINUS=$(echo $WORD | sed 's/ /-/g')
+  # percent encoding %20
+  WORD_PERC=$(echo $WORD | sed 's/ /%20/g')
+
   [ -z $WORD ] && exit ||
   xdg-open $AMAZON_DE$WORD_PLUS
   xdg-open $EBAY_DE$WORD_PLUS$EBAY_LOWEST_PRICE
@@ -34,4 +35,5 @@ do
   xdg-open $WOB$WORD_PERC
 
   sleep 1
+
 done
