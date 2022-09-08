@@ -3,52 +3,105 @@
 CFG_DIR=~/.config/FFF
 
 check_config_dir () {
-  if [ ! -d $CFG_DIR ]
+  # Check if configs are present, else create them
+  if [ ! -d $CFG_DIR ] && [ -n "`ls -A $CFG_DIR` 2>/dev/null" ]
   then
     echo "Configuration directory does not exist."
     echo "Creating and populating it with default values."
     mkdir -p ~/.config/FFF
-    cp config/FFF $CFG_DIR
+    cp -r config/FFF/* $CFG_DIR
   fi
 }
 
-#check_whitespace () {
-#  check_config_dir
-#  if [ -f $CFG_DIR/whitespace.cfg ]
-#  then
-#    echo "Whitespace configuration file not present."
-#    echo "Creating it with default values."
-#    cp config/FFF/whitespace.cfg $CFG_DIR/whitespace.cfg
-#  fi
-#}
+get_categories () {
+  # Create an array containing the search categories
+  CATEGORIES=(`basename -s .cfg ~/.config/FFF/*.cfg`)
+  echo ${CATEGORIES[@]}
+}
+
+get_tabs () {
+  # Check how many new browser tabs each search category will open
+  for (( i=0 ; i<${#CATEGORIES[@]} ; i++ ))
+  do
+    TAB=`cat $CFG_DIR/${CATEGORIES[$i]}.sh | grep xdg-open | wc -l`
+    TABS+=($TAB)
+  done 
+}
+
+create_yad_CHK () {
+  # Iterate the search categories and format them to be used as arguments with yad
+  #for i in {0..${#CATEGORIES[@]}}
+  for (( i=0 ; i<${#CATEGORIES[@]} ; i++ ))
+  do
+    FIELD="${CATEGORIES[$i]^} - ${TABS[$i]} tabs"
+    YAD_CHK+=("\"--field=$FIELD:CHK\"")
+  done
+  echo ${YAD_CHK[@]}
+}
 
 FFF () {
+  # Store yad options in a variable
+  YAD_OPTIONS="--bool-fmt=1 \
+   --title=FFF \
+    --width=800 \
+    --form \
+    --field= \
+    ${YAD_CHK[@]}"
+  echo $YAD_OPTIONS
 
-# Semicolon is used to separate searches
-IFS=';'; WORDS=($(zenity --entry))
+  # Store yad command in a variable
+  YAD_COMMAND="yad $YAD_OPTIONS --button=Search"
+  echo $YAD_COMMAND
 
-for WORD in "${WORDS[@]}"
-do
+  # Execute yad and store its output in an array
+  IFS='|' ; YAD_OUTPUT=(`eval $YAD_COMMAND`)
+  echo ${YAD_OUTPUT[@]}
+  echo ${YAD_OUTPUT[0]}
+
+  # Store the provided text field in an array
+  IFS=';' && WORDS=(`echo ${YAD_OUTPUT[0]}`)
+  echo ${WORDS[@]}
   
-  # substitute whitespace
-  # plus sign + 
-  WORD_PLUS=$(echo $WORD | sed 's/ /+/g')
-  # minus sign -
-  WORD_MINUS=$(echo $WORD | sed 's/ /-/g')
-  # percent encoding %20
-  WORD_PERC=$(echo $WORD | sed 's/ /%20/g')
-
-  [ -z $WORD ] && exit ||
-  xdg-open $AMAZON_DE$WORD_PLUS
-  xdg-open $EBAY_DE$WORD_PLUS$EBAY_LOWEST_PRICE
-  xdg-open $EBAY_DE$WORD_PLUS$EBAY_END_SOONEST$EBAY_AUCTION
-  xdg-open $EBAY_KL$WORD_MINUS/k0
-  xdg-open $MEDIMOPS$WORD_PLUS
-  xdg-open $REBUY$WORD_PERC$REBUY_LOWEST_PRICE
-  xdg-open $WOB$WORD_PERC
-
-  sleep 1
-
-done
-
+  # Iterate the search entries
+  for WORD in "${WORDS[@]}"
+  do
+    # substitute whitespace with:
+    # plus sign + 
+    WORD_PLUS=$(echo $WORD | sed 's/ /+/g')
+    # minus sign -
+    WORD_MINUS=$(echo $WORD | sed 's/ /-/g')
+    # percent encoding %20
+    WORD_PERC=$(echo $WORD | sed 's/ /%20/g')
+  
+    # Iterate the search categories
+    for (( i=0 ; i<${#CATEGORIES[@]} ; i++ ))
+    do
+      if [ -z $WORD ]
+      # Exit with no input provided
+      then
+        exit 
+      # Check if search category checkbox was selected, if so apply the search
+      else
+        ELEMENT=$(($i + 1))
+        echo element is $ELEMENT
+        echo ${YAD_OUTPUT[$ELEMENT]}
+        if [ ${YAD_OUTPUT[$ELEMENT]} = 1 ]
+        then
+          echo "Searching ${CATEGORIES[$i]}"
+          source $CFG_DIR/${CATEGORIES[$i]}.sh
+          sleep 1
+        fi
+      fi
+    done
+  done
 }
+
+main () {
+  check_config_dir
+  get_categories
+  get_tabs
+  create_yad_CHK
+  FFF
+}
+
+main
