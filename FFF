@@ -1,23 +1,36 @@
 #!/bin/bash
 
-# websites 
-AMAZON_DE="https://www.amazon.de/s?k="
-EBAY_DE="https://www.ebay.de/sch/i.html?_nkw="
-EBAY_KL="https://www.ebay-kleinanzeigen.de/s-"
-EBAY_LOWEST_PRICE="&_sop=15"
-EBAY_END_SOONEST="&_sop=1"
-EBAY_AUCTION="&LH_Auction=1"
-MEDIMOPS="https://www.medimops.de/produkte-C0/?listorder=asc&listorderby=oxvarminprice&searchparam="
-REBUY="https://www.rebuy.de/kaufen/suchen?q="
-REBUY_LOWEST_PRICE="&sortBy=price_asc"
-WOB="https://www.wob.com/de-de/kategorie/alle?search="
+CFG_DIR=~/.config/FFF
 
+check_config_dir () {
+  if [ ! -d $CFG_DIR ]
+  then
+    echo "Configuration directory does not exist."
+    echo "Creating and populating it with default values."
+    mkdir -p ~/.config/FFF
+    cp config/FFF $CFG_DIR
+  fi
+}
+
+#check_whitespace () {
+#  check_config_dir
+#  if [ -f $CFG_DIR/whitespace.cfg ]
+#  then
+#    echo "Whitespace configuration file not present."
+#    echo "Creating it with default values."
+#    cp config/FFF/whitespace.cfg $CFG_DIR/whitespace.cfg
+#  fi
+#}
+
+FFF () {
+
+# Semicolon is used to separate searches
 IFS=';'; WORDS=($(zenity --entry))
 
 for WORD in "${WORDS[@]}"
 do
   
-  # substitute spaces
+  # substitute whitespace
   # plus sign + 
   WORD_PLUS=$(echo $WORD | sed 's/ /+/g')
   # minus sign -
@@ -37,3 +50,5 @@ do
   sleep 1
 
 done
+
+}
