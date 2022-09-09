@@ -35,10 +35,9 @@ create_yad_CHK () {
   #for i in {0..${#CATEGORIES[@]}}
   for (( i=0 ; i<${#CATEGORIES[@]} ; i++ ))
   do
-    FIELD="${CATEGORIES[$i]^} - ${TABS[$i]} tabs"
+    FIELD="${CATEGORIES[$i]} - ${TABS[$i]} tabs"
     YAD_CHK+=("\"--field=$FIELD:CHK\"")
   done
-  echo ${YAD_CHK[@]}
 }
 
 FFF () {
@@ -49,20 +48,15 @@ FFF () {
     --form \
     --field= \
     ${YAD_CHK[@]}"
-  echo $YAD_OPTIONS
 
   # Store yad command and some more options in a variable
   YAD_COMMAND="yad $YAD_OPTIONS --button=Search --buttons-layout=center"
-  echo $YAD_COMMAND
 
   # Execute yad and store its output in an array
   IFS='|' ; YAD_OUTPUT=(`eval $YAD_COMMAND`)
-  echo ${YAD_OUTPUT[@]}
-  echo ${YAD_OUTPUT[0]}
 
   # Store the provided text field in an array
   IFS=';' && WORDS=(`echo ${YAD_OUTPUT[0]}`)
-  echo ${WORDS[@]}
   
   # Iterate the search entries
   for WORD in "${WORDS[@]}"
@@ -84,18 +78,15 @@ FFF () {
         exit 
       # Check if search category checkbox was selected, if so apply the search
       else
-        ELEMENT=$(($i + 1))
-        echo element is $ELEMENT
-        echo ${YAD_OUTPUT[$ELEMENT]}
-        if [ ${YAD_OUTPUT[$ELEMENT]} = 1 ]
+        if [ ${YAD_OUTPUT[$i + 1]} = 1 ]
         then
           echo "Searching ${CATEGORIES[$i]}"
           source $CFG_DIR/${CATEGORIES[$i]}.cfg
           IFS=$'\n' ; for SEARCH_URL in `compgen -v | grep SEARCH_ $CFG_DIR/${CATEGORIES[$i]}.cfg | cut -d= -f2`
           do
             SEARCH="$BROWSER $SEARCH_URL"
-            echo $SEARCH
-            #eval $SEARCH
+            #echo $SEARCH
+            eval $SEARCH
           done
           sleep 1
         fi
