@@ -1,5 +1,5 @@
 config/*
 !config/Ebay-DE.cfg
-!config/Video.cfg
-!config/Video-Advanced.cfg
+!config/Videos.cfg
+!config/Videos-Advanced.cfg
 !config/README.md
