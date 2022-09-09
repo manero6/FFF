@@ -7,9 +7,6 @@ cat videos-advanced.cfg
 ```bash
 ### videos advanced            # just a title
 
-### Source other CFGs
-source $CFG_DIR/books.cfg      # sourcing some other config to avoid code duplication, $CFG_DIR is declared by FFF
-
 ### Search URLs
 ## Internet Archive
 # +                            # this is there to remember what whitespaces should be substituted with
