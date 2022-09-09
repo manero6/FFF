@@ -4,7 +4,7 @@ Following in the code block is an example ".cfg" file with explanations.
 cat videos-advanced.cfg
 ```
 
-```
+```bash
 ### videos advanced            # just a title
 
 ### Source other CFGs
