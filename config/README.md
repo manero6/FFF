@@ -8,14 +8,14 @@ cat videos-advanced.cfg
 ### videos advanced            # just a title
 
 ### Source other CFGs
-source $CFG_DIR/books.cfg      # sourcing some other config to avoid code duplication
+source $CFG_DIR/books.cfg      # sourcing some other config to avoid code duplication, $CFG_DIR is declared by FFF
 
 ### Search URLs
 ## Internet Archive
 # +                            # this is there to remember what whitespaces should be substituted with
 IA="https://archive.org/search.php?query="
 # Filters
-# Search                      # FFF iterates all variables starting with "SEARCH"
+# Search                       # FFF iterates all variables starting with "SEARCH"
 SEARCH_IA=$IA$WORD_PLUS        # this is the actual variable used by FFF, $WORD_PLUS is already declared there
 
 ## Bitchute
