@@ -56,9 +56,11 @@ FFF () {
 
   # Execute yad and store its output in an array
   IFS='|' ; YAD_OUTPUT=(`eval $YAD_COMMAND`)
+  echo ${YAD_OUTPUT[0]} ${YAD_OUTPUT[@]}
 
   # Store the provided text field in an array
-  IFS=';' && WORDS=(`echo ${YAD_OUTPUT[0]}`)
+  IFS=';' && WORDS=(`echo "${YAD_OUTPUT[0]}"`)
+  echo ${WORDS[1]}
   
   # Iterate the search entries
   for WORD in "${WORDS[@]}"
