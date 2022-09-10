@@ -86,7 +86,7 @@ FFF () {
         then
           echo "Searching ${CATEGORIES[$i]}"
           source $CFG_DIR/${CATEGORIES[$i]}.cfg
-          IFS=$'\n' ; for SEARCH_URL in `compgen -v | grep SEARCH_ $CFG_DIR/${CATEGORIES[$i]}.cfg | cut -d= -f2`
+          IFS=$'\n' ; for SEARCH_URL in `compgen -v | grep SEARCH_ $CFG_DIR/${CATEGORIES[$i]}.cfg | grep -v "#" | cut -d= -f2`
           do
             SEARCH="$BROWSER $SEARCH_URL"
             #echo $SEARCH
