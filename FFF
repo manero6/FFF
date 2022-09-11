@@ -1,20 +1,29 @@
 #!/bin/bash
 
+# Default config directory
 CFG_DIR=~/.config/FFF
-# xdg-open to use the default browser
+# "xdg-open" to use the default browser
 BROWSER=xdg-open
-# default yad width
-YAD_WIDTH=800
+# Default yad width
+YAD_WIDTH=600
 
 check_config_dir () {
-  # Check if configs are present, else create them
-  if [ ! -d $CFG_DIR ] && [ -n "`ls -A $CFG_DIR` 2>/dev/null" ]
+  # Check if config directory is present, else create it
+  if [ ! -d $CFG_DIR ]
   then
-    echo "Configuration directory does not exist."
-    echo "Creating and populating it with default values."
-    mkdir -p ~/.config/FFF
-    cp -r config/FFF/* $CFG_DIR
+    echo "Configuration directory does not exist. Creating it."
+    mkdir -p $CFG_DIR
   fi
+}
+
+get_default_configs () {
+  # Check if config directory is empty
+  if [ `ls -A $CFG_DIR` ]
+  then
+    echo "Configuration directory is empty."
+  else
+    echo "Configuration directory is not empty. Aborting."
+  fi 
 }
 
 get_categories () {
