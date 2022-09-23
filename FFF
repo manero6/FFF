@@ -1,18 +1,63 @@
 #!/bin/bash
 
+
+## Default variables
 # Default config directory
-CFG_DIR=~/.config/FFF
+#debug
+CFG_DIR=~/.config/FFFF
+#CFG_DIR=~/.config/FFF
 # "xdg-open" to use the default browser
 BROWSER=xdg-open
-# Default yad width
+# yad defaults
 YAD_WIDTH=600
+YAD_TIMEOUT=300
+YAD_HISTORY=$CFG_DIR/history
+# Default remote config files and URL
+REMOTE_CFG=(Ebay-DE Videos Videos-Alt)
+#debug with "python -m http.server 9999" 
+#REMOTE_URL="http://localhost:9999"
+REMOTE_URL="https://github.com/manero6/FFF/tree/config/config"
+
+check_yad () {
+  if [ `which yad 2>/dev/null` ]
+  then
+    true
+  else
+    echo "Please install \"yad\" or use FFF with the --nogui option."
+    exit 127
+  fi
+}
+
+yad_no_config_files () {
+  yad --title FFF \
+  --form \
+  --field="Using configuration folder:\n\n"$CFG_DIR"\n:LBL" \
+  --field="No configuration files found.\nDo you want to download the default configuration files from GitHub?\n:LBL"
+}
 
 check_config_dir () {
   # Check if config directory is present, else create it
   if [ ! -d $CFG_DIR ]
   then
-    echo "Configuration directory does not exist. Creating it."
-    mkdir -p $CFG_DIR
+    mkdir $CFG_DIR
+  fi
+}
+
+check_config_files () {
+  if [ ! "`ls -A $CFG_DIR/*.cfg 2>/dev/null`" ]
+  then
+    if yad_no_config_files
+    then
+      echo $?
+      for i in ${REMOTE_CFG[@]}
+      do
+        wget $REMOTE_URL/$i.cfg -O $CFG_DIR/$i.cfg
+      done
+    else
+      echo $?
+      echo "Please manually populate the configuration folder or re-run FFF to download the default configuration files from GitHub."
+      exit 1
+    fi
   fi
 }
 
@@ -20,20 +65,36 @@ get_default_configs () {
   # Check if config directory is empty
   if [ `ls -A $CFG_DIR` ]
   then
-    echo "Configuration directory is empty."
+    yad --title FFF \
+    --form \
+    --text "Configuration directory is empty.\nDo you want to download the default configuration files?" \
+    && \
+    #WHICH_CFG="yad --title FFF \
+    #--form \
+    #--text \"Please select which configuration files to download:\n\" \
+    #for (( i=0 ;  i<${#REMOTE_CFG[@]} ; i++ )); do echo --field=\"$i:CHK\"; done" \
+    #&& \
+    for (( i=0 ; i<${REMOTE_CFG[@]} ; i++ ))
+    do
+      if [ ${WHICH_CFG[$i]} = 1 ]
+      then
+        cd $CFG_DIR \
+        && wget "$REMOTE_URL${REMOTE_CFG[$i]}.cfg"
+      fi
+    done
   else
-    echo "Configuration directory is not empty. Aborting."
+    echo "Configuration directory is not empty.\n Checking files."
   fi 
 }
 
 get_categories () {
   # Create an array containing the search categories
-  CATEGORIES=(`basename -s .cfg ~/.config/FFF/*.cfg`)
-  echo ${CATEGORIES[@]}
+  CATEGORIES=(`basename -s .cfg $(ls $CFG_DIR/*.cfg)`)
+  echo -e "Available search categories:\n`for (( i=0 ; i<${#CATEGORIES[@]} ; i++ )); do echo - ${CATEGORIES[$i]}; done`"
 }
 
 get_tabs () {
-  # Check how many new browser tabs each search category will open
+  # Check how many browser tabs each search category will open
   for (( i=0 ; i<${#CATEGORIES[@]} ; i++ ))
   do
     TAB=`grep SEARCH_ $CFG_DIR/${CATEGORIES[$i]}.cfg | grep -v "#" | wc -l`
@@ -46,51 +107,78 @@ create_yad_CHK () {
   #for i in {0..${#CATEGORIES[@]}}
   for (( i=0 ; i<${#CATEGORIES[@]} ; i++ ))
   do
-    FIELD="${CATEGORIES[$i]} - ${TABS[$i]} tabs"
+    FIELD="${CATEGORIES[$i]} — ${TABS[$i]} tabs"
     YAD_CHK+=("\"--field=$FIELD:CHK\"")
   done
 }
 
+yad_FFF () {
+  yad --bool-fmt=1 \
+  --timeout $YAD_TIMEOUT \
+  --title=FFF \
+  --width=$YAD_WIDTH \
+  --form \
+  --field= \
+  --rest=$YAD_HISTORY \
+  "${YAD_CHK[@]}" \
+  --button=Search \
+  --buttons-layout=center
+}
+
 FFF () {
-  # Store some yad options in a variable
+  ## Store yad options in a variable
   YAD_OPTIONS="--bool-fmt=1 \
+    --timeout $YAD_TIMEOUT \
     --title=FFF \
     --width=$YAD_WIDTH \
     --form \
     --field= \
-    ${YAD_CHK[@]}"
+    --rest=$YAD_HISTORY \
+    ${YAD_CHK[@]} \
+    --button=Search \
+    --buttons-layout=center"
 
   # Store yad command and some more options in a variable
-  YAD_COMMAND="yad $YAD_OPTIONS --button=Search --buttons-layout=center"
+  YAD_COMMAND="yad $YAD_OPTIONS"
+  #YAD_COMMAND="`yad_FFF`"
 
   # Execute yad and store its output in an array
   IFS='|' ; YAD_OUTPUT=(`eval $YAD_COMMAND`)
+  #IFS='|' ; YAD_OUTPUT=(`yad_FFF`)
   echo ${YAD_OUTPUT[0]} ${YAD_OUTPUT[@]}
+  # Write to history file only if search field is not empty
+  if [ ! -z ${YAD_OUTPUT[0]} ]
+  then
+    echo -e "History file updated with entry:\n=> ${YAD_OUTPUT[0]}"
+    echo ${YAD_OUTPUT[0]} > $YAD_HISTORY
+  fi
 
   # Store the provided text field in an array
   IFS=';' && WORDS=(`echo "${YAD_OUTPUT[0]}"`)
-  echo ${WORDS[1]}
+  echo aa${WORDS[1]}
+  echo bb${#WORDS[@]}
   
-  # Iterate the search entries
-  for WORD in "${WORDS[@]}"
-  do
-    # substitute whitespace with:
-    # plus sign + 
-    WORD_PLUS=$(echo $WORD | sed 's/ /+/g')
-    # minus sign -
-    WORD_MINUS=$(echo $WORD | sed 's/ /-/g')
-    # percent encoding %20
-    WORD_PERC=$(echo $WORD | sed 's/ /%20/g')
-  
-    # Iterate the search categories
-    for (( i=0 ; i<${#CATEGORIES[@]} ; i++ ))
+  if [ ${#WORDS[@]} = 0 ]
+  then
+    # Exit when no input provided
+    echo -e "Aborting as the search field was empty.\nPlease provide something to search."
+    exit 1
+  else
+    # Iterate the search entries
+    for WORD in "${WORDS[@]}"
     do
-      if [ -z $WORD ]
-      # Exit with no input provided
-      then
-        exit 
-      # Check if search category checkbox was selected, if so apply the search
-      else
+      # Substitute whitespace with:
+      # plus sign + 
+      WORD_PLUS=$(echo $WORD | sed 's/ /+/g')
+      # minus sign -
+      WORD_MINUS=$(echo $WORD | sed 's/ /-/g')
+      # percent encoding %20
+      WORD_PERC=$(echo $WORD | sed 's/ /%20/g')
+
+      # Iterate the search categories
+      for (( i=0 ; i<${#CATEGORIES[@]} ; i++ ))
+      do
+        # Check if search category checkbox was selected, if so apply the search
         if [ ${YAD_OUTPUT[$i + 1]} = 1 ]
         then
           echo "Searching ${CATEGORIES[$i]}"
@@ -103,13 +191,15 @@ FFF () {
           done
           sleep 1
         fi
-      fi
+      done
     done
-  done
+  fi
 }
 
 main () {
+  check_yad
   check_config_dir
+  check_config_files
   get_categories
   get_tabs
   create_yad_CHK
