@@ -16,7 +16,7 @@ YAD_HISTORY=$CFG_DIR/history
 REMOTE_CFG=(Ebay-DE Videos Videos-Alt)
 #debug with "python -m http.server 9999" 
 #REMOTE_URL="http://localhost:9999"
-REMOTE_URL="https://github.com/manero6/FFF/tree/config/config"
+REMOTE_URL="https://raw.githubusercontent.com/manero6/FFF/configs/config"
 
 check_yad () {
   if [ `which yad 2>/dev/null` ]
@@ -61,32 +61,6 @@ check_config_files () {
   fi
 }
 
-get_default_configs () {
-  # Check if config directory is empty
-  if [ `ls -A $CFG_DIR` ]
-  then
-    yad --title FFF \
-    --form \
-    --text "Configuration directory is empty.\nDo you want to download the default configuration files?" \
-    && \
-    #WHICH_CFG="yad --title FFF \
-    #--form \
-    #--text \"Please select which configuration files to download:\n\" \
-    #for (( i=0 ;  i<${#REMOTE_CFG[@]} ; i++ )); do echo --field=\"$i:CHK\"; done" \
-    #&& \
-    for (( i=0 ; i<${REMOTE_CFG[@]} ; i++ ))
-    do
-      if [ ${WHICH_CFG[$i]} = 1 ]
-      then
-        cd $CFG_DIR \
-        && wget "$REMOTE_URL${REMOTE_CFG[$i]}.cfg"
-      fi
-    done
-  else
-    echo "Configuration directory is not empty.\n Checking files."
-  fi 
-}
-
 get_categories () {
   # Create an array containing the search categories
   CATEGORIES=(`basename -s .cfg $(ls $CFG_DIR/*.cfg)`)
@@ -100,6 +74,7 @@ get_tabs () {
     TAB=`grep SEARCH_ $CFG_DIR/${CATEGORIES[$i]}.cfg | grep -v "#" | wc -l`
     TABS+=($TAB)
   done 
+  echo ${TABS[@]}
 }
 
 create_yad_CHK () {
