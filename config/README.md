@@ -22,7 +22,7 @@ BITCHUTE="https://www.bitchute.com/search/?query="
 BITHCUTE_LONG="&duration=long" # I'll use this URL parameter to sort videos
 # Search                       # for this search 2 browser tabs will open
 SEARCH_BITCHUTE=$BITCHUTE$WORD_PERC
-SEARCH_BITCHUTEi_LONG=$BITCHUTE$WORD_PERC$BITCHUTE_LONG
+SEARCH_BITCHUTE_LONG=$BITCHUTE$WORD_PERC$BITCHUTE_LONG
 
 ## Search 3
 # -
@@ -34,5 +34,5 @@ SEARCH_etc...
 # +
 # Filters
 # Search
-SEARCH_etc...
+#SEARCH_etc...                 # comment out a serch to disable it
 ```
