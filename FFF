@@ -3,9 +3,8 @@
 
 ## Default variables
 # Default config directory
-#debug
-CFG_DIR=~/.config/FFFF
-#CFG_DIR=~/.config/FFF
+#debug with another config directory CFG_DIR=~/.config/FFFF
+CFG_DIR=~/.config/FFF
 # "xdg-open" to use the default browser
 BROWSER=xdg-open
 # yad defaults
@@ -14,8 +13,7 @@ YAD_TIMEOUT=300
 YAD_HISTORY=$CFG_DIR/history
 # Default remote config files and URL
 REMOTE_CFG=(Ebay-DE Videos Videos-Alt)
-#debug with "python -m http.server 9999" 
-#REMOTE_URL="http://localhost:9999"
+#debug with "python -m http.server 9999" REMOTE_URL="http://localhost:9999"
 REMOTE_URL="https://raw.githubusercontent.com/manero6/FFF/configs/config"
 
 check_yad () {
@@ -36,7 +34,7 @@ yad_no_config_files () {
 }
 
 check_config_dir () {
-  # Check if config directory is present, else create it
+  # Check if configuration directory is present, if not create it
   if [ ! -d $CFG_DIR ]
   then
     mkdir $CFG_DIR
@@ -44,7 +42,8 @@ check_config_dir () {
 }
 
 check_config_files () {
-  if [ ! "`ls -A $CFG_DIR/*.cfg 2>/dev/null`" ]
+  # Check if configuration directory contains .cfg files, if not prompt to download some from GitHub
+  if [ ! "`ls $CFG_DIR/*.cfg 2>/dev/null`" ]
   then
     if yad_no_config_files
     then
