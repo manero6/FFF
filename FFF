@@ -50,7 +50,14 @@ check_config_files () {
       echo $?
       for i in ${REMOTE_CFG[@]}
       do
-        wget $REMOTE_URL/$i.cfg -O $CFG_DIR/$i.cfg
+        # wget to download configuration files from GitHub
+        CONFIG_FILE=$CFG_DIR/$i.cfg
+        wget $REMOTE_URL/$i.cfg -O $CONFIG_FILE
+        # Checking that wget successfully downloaded from GitHub, else rm the empty file
+        if [ ! -s $CONFIG_FILE ]
+        then
+          rm $CONFIG_FILE
+        fi
       done
     else
       echo $?
