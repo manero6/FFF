@@ -4,7 +4,7 @@
 ## Default variables
 # Default config directory
 #debug with another config directory CFG_DIR=~/.config/FFFF
-CFG_DIR=~/.config/FFFF
+CFG_DIR=~/.config/FFF
 # "xdg-open" to use the default browser
 BROWSER=xdg-open
 # yad defaults
