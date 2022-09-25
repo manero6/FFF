@@ -4,7 +4,7 @@
 ## Default variables
 # Default config directory
 #debug with another config directory CFG_DIR=~/.config/FFFF
-CFG_DIR=~/.config/FFF
+CFG_DIR=~/.config/FFFF
 # "xdg-open" to use the default browser
 BROWSER=xdg-open
 # yad defaults
@@ -47,18 +47,25 @@ check_config_files () {
   then
     if yad_no_config_files
     then
-      echo $?
-      for i in ${REMOTE_CFG[@]}
-      do
-        # wget to download configuration files from GitHub
-        CONFIG_FILE=$CFG_DIR/$i.cfg
-        wget $REMOTE_URL/$i.cfg -O $CONFIG_FILE
-        # Checking that wget successfully downloaded from GitHub, else rm the empty file
-        if [ ! -s $CONFIG_FILE ]
-        then
-          rm $CONFIG_FILE
-        fi
-      done
+      echo "Testing remote connection to GitHub."
+      # Check with wget in "dry-run" mode that a remote configuration file is reachable, if so download them all
+      if wget -q --spider $REMOTE_URL/${REMOTE_CFG[0]}.cfg
+      then
+        echo "Connection to GitHub successful. Downloading configuration files."
+        for i in ${REMOTE_CFG[@]}
+        do
+          # Download configuration files from GitHub
+          CONFIG_FILE=$CFG_DIR/$i.cfg
+          wget -nv $REMOTE_URL/$i.cfg -O $CONFIG_FILE
+          ## Checking that wget successfully downloaded from GitHub, else rm the empty file
+          #if [ ! -s $CONFIG_FILE ]
+          #then
+          #  rm $CONFIG_FILE
+          #fi
+        done
+      else
+        echo "Download from GitHub failed. Please re-run FFF to try again."
+      fi
     else
       echo $?
       echo "Please manually populate the configuration folder or re-run FFF to download the default configuration files from GitHub."
