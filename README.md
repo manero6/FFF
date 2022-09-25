@@ -1,13 +1,16 @@
 # FFF aka stuFF Finder
 
-A simple Bash script that automatically search stuff on the desired websites, by opening tabs in the default browser.
+A Bash script that automatically search stuff on the desired websites, by opening new tabs in the default browser.
 
-I use it to search for books and as I'm currently based in Germany the script redirect to German sites.
-The sites are there as examples and you can modify the script to point to other websites, specify categories, sort your search and so on.
+I used it initially to search for books on some websites.
+The script evolved and it can search on different categories, each with their own websites.
 
-This script looks for:
-- Ebay.de - filtering items from lowest price
-- Ebay.de - only auctions filtering items from ending soonest
-- ebay-kleinazeigen.de - default filter
-- medimops.de - filtering items from lowest price
-- rebuy.de - filtering items from lowest price
+In this repository there are some default configuration files. These are downloaded by FFF in case it finds no configuration file locally.
+Each configuration files contains different websites and will appear in FFF as a search category.
+
+The configuration files are there as examples and you can modify them to point to other websites, sort your search and so on.
+
+The default configuration files look for:
+- Ebay-DE - Ebay like websites in Germany
+- Videos - mainstream video platforms like YT and Vimeo
+- Videos-Alt - less-known/alternative video platform like Odysee, Bitchute and Internet Archive
