@@ -1,5 +1,8 @@
 # FFF aka stuFF Finder
 
+![FFF](./Screenshot.png)
+
+
 A Bash script that automatically search stuff on the desired websites, by opening new tabs in the default browser.
 
 I used it initially to search for books on some websites.
