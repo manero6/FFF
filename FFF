@@ -17,11 +17,11 @@ REMOTE_CFG=(Ebay-DE Videos Videos-Alt)
 REMOTE_URL="https://raw.githubusercontent.com/manero6/FFF/configs/config"
 
 check_yad () {
-  if which yad 2>/dev/null
+  printf "Checking 'yad' => "
+  if ! which yad 2>/dev/null
   then
-    true
-  else
-    echo "Please install \"yad\" or use FFF with the --nogui option."
+    echo "Not found!"
+    echo "Please install 'yad' or use FFF with the --nogui option."
     exit 127
   fi
 }
