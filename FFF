@@ -176,6 +176,7 @@ FFF () {
             SEARCH="$BROWSER $SEARCH_URL"
             #echo $SEARCH
             eval $SEARCH
+            sleep 0.1
           done
           sleep 1
         fi
