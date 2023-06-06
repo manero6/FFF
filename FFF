@@ -15,6 +15,9 @@ YAD_HISTORY=$CFG_DIR/history
 REMOTE_CFG=(Ebay-DE Videos Videos-Alt)
 #debug with "python -m http.server 9999" REMOTE_URL="http://localhost:9999"
 REMOTE_URL="https://raw.githubusercontent.com/manero6/FFF/configs/config"
+# the symbol used to separate each search from the given string
+# default is ',' so that csv files can be directly passed as command line option
+SEPARATOR=','
 
 check_yad () {
   printf "Checking 'yad' => "
@@ -142,7 +145,8 @@ FFF () {
   fi
 
   # Store the provided text field in an array
-  IFS=';' && WORDS=(`echo "${YAD_OUTPUT[0]}"`)
+  #IFS=';' && WORDS=(`echo "${YAD_OUTPUT[0]}"`)
+  IFS=$SEPARATOR && WORDS=(`echo "${YAD_OUTPUT[0]}"`)
   echo aa${WORDS[1]}
   echo bb${#WORDS[@]}
   
