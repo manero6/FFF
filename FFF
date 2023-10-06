@@ -10,6 +10,7 @@ BROWSER=xdg-open
 # yad defaults
 YAD_WIDTH=600
 YAD_TIMEOUT=300
+YAD_TIMEOUT_INDICATOR=top
 YAD_HISTORY=$CFG_DIR/history
 # Default remote config files and URL
 REMOTE_CFG=(Ebay-DE Videos Videos-Alt)
@@ -106,6 +107,7 @@ create_yad_CHK () {
 yad_FFF () {
   yad --bool-fmt=1 \
   --timeout $YAD_TIMEOUT \
+  --timeout-indicator $YAD_TIMEOUT_INDICATOR \
   --title=FFF \
   --width=$YAD_WIDTH \
   --form \
@@ -120,6 +122,7 @@ FFF () {
   ## Store yad options in a variable
   YAD_OPTIONS="--bool-fmt=1 \
     --timeout $YAD_TIMEOUT \
+    --timeout-indicator $YAD_TIMEOUT_INDICATOR \
     --title=FFF \
     --width=$YAD_WIDTH \
     --form \
